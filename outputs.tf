@@ -3,7 +3,7 @@
 # ----------------------------------------------------------
 
 output "vpc_id" {
-  description = "ID du VPC créé"
+  description = "ID du VPC créé par le module"
   value       = aws_vpc.vpc.id
 }
 

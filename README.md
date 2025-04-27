@@ -99,7 +99,7 @@ No modules.
 | <a name="output_ssh_key_name"></a> [ssh\_key\_name](#output\_ssh\_key\_name) | Nom de la paire de clés SSH créée |
 | <a name="output_ssh_private_key"></a> [ssh\_private\_key](#output\_ssh\_private\_key) | Clé privée SSH générée (sensible) |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | ID du sous-réseau public |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID du VPC créé |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID du VPC créé par le module |
 <!-- END_TF_DOCS -->
 ---
 ---
