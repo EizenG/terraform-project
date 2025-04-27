@@ -1,26 +1,26 @@
 variable "aws_region" {
   description = "Région AWS"
-  type = string
+  type        = string
 }
 
 variable "aws_profile" {
   description = "Profile aws pour les credentials"
-  type = string
+  type        = string
 }
 
 variable "namespace" {
   description = "namespace requis par le module"
-  type = string
+  type        = string
 }
 
 variable "vpc_cidr_block" {
   description = "VPC CIDR BLOCK"
-  type = string
+  type        = string
 }
 
 variable "subnet_cidr_block" {
   description = "Bloc CIDR pour le sous-réseau public"
-  type = string
+  type        = string
 }
 
 variable "map_public_ip" {

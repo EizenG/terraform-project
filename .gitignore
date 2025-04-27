@@ -1,1 +1,11 @@
 /usecase-example/.terraform
+/usecase-example/modules/terraform-aws-ec2-instance/.terraform
+/.terraform
+
+
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Ignore backup files
+*.backup

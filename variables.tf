@@ -98,12 +98,12 @@ variable "additional_ingress_rules" {
   validation {
     condition = alltrue([
       for rule in var.additional_ingress_rules :
-        rule.from_port >= 0 && rule.from_port <= 65535 &&
-        rule.to_port >= 0 && rule.to_port <= 65535 &&
-        rule.to_port >= rule.from_port &&
-        contains(["tcp", "udp", "icmp", "-1"], rule.protocol) &&
-        length(rule.description) > 0 &&
-        length([for cidr in rule.cidr_blocks : cidr if can(cidrnetmask(cidr))]) == length(rule.cidr_blocks)
+      rule.from_port >= 0 && rule.from_port <= 65535 &&
+      rule.to_port >= 0 && rule.to_port <= 65535 &&
+      rule.to_port >= rule.from_port &&
+      contains(["tcp", "udp", "icmp", "-1"], rule.protocol) &&
+      length(rule.description) > 0 &&
+      length([for cidr in rule.cidr_blocks : cidr if can(cidrnetmask(cidr))]) == length(rule.cidr_blocks)
     ])
     error_message = "Les règles d'entrée doivent avoir des ports valides (0-65535), un protocole valide (tcp, udp, icmp, -1), une description et des CIDR valides."
   }

@@ -12,8 +12,8 @@
  * Réseau VPC pour isoler l'infrastructure
  */
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr_block
-  
+  cidr_block = var.vpc_cidr_block
+
   tags = merge(
     var.common_tags,
     {
@@ -27,7 +27,7 @@ resource "aws_vpc" "vpc" {
  */
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
-  
+
   tags = merge(
     var.common_tags,
     {
@@ -45,7 +45,7 @@ resource "aws_subnet" "public" {
   cidr_block              = var.subnet_cidr_block
   map_public_ip_on_launch = var.map_public_ip
   availability_zone       = var.availability_zone
-  
+
   tags = merge(
     var.common_tags,
     {
@@ -60,7 +60,7 @@ resource "aws_subnet" "public" {
  */
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
-  
+
   tags = merge(
     var.common_tags,
     {
@@ -118,7 +118,7 @@ resource "aws_key_pair" "ssh_key" {
   count      = var.key_name != null ? 1 : 0
   key_name   = var.key_name
   public_key = tls_private_key.ssh_key.public_key_openssh
-  
+
   tags = merge(
     var.common_tags,
     {
@@ -188,11 +188,11 @@ resource "aws_instance" "ec2_instance" {
   availability_zone           = var.availability_zone
   key_name                    = var.key_name != null ? aws_key_pair.ssh_key[0].key_name : null
   associate_public_ip_address = var.map_public_ip
-  
+
 
   # Script de démarrage conditionnel
   user_data = var.user_data != "" ? var.user_data : null
-  
+
   tags = merge(
     var.common_tags,
     {
