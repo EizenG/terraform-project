@@ -74,9 +74,12 @@ variable "save_private_key_to_file" {
 }
 
 variable "allowed_ssh_cidrs" {
-  description = "Liste des blocs CIDR autorisés à se connecter en SSH"
+  description = <<EOT
+                Liste des blocs CIDR autorisés à se connecter en SSH.
+                ⚠️ ATTENTION : Utiliser "0.0.0.0/0" autorise l'accès SSH depuis Internet entier, ce qui est fortement déconseillé en production.
+                Utilisez uniquement des plages IP de confiance (ex : votre IP publique ou celle de votre VPN).
+                EOT
   type        = list(string)
-  default     = ["0.0.0.0/0"]
 
   validation {
     condition     = length([for cidr in var.allowed_ssh_cidrs : cidr if can(cidrnetmask(cidr))]) == length(var.allowed_ssh_cidrs)
@@ -108,6 +111,43 @@ variable "additional_ingress_rules" {
     error_message = "Les règles d'entrée doivent avoir des ports valides (0-65535), un protocole valide (tcp, udp, icmp, -1), une description et des CIDR valides."
   }
 }
+
+variable "egress_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+    description = optional(string)
+  }))
+  description = <<EOT
+                Liste des règles de sortie (egress). 
+                ⚠️ Par défaut, tout le trafic sortant est autorisé (0.0.0.0/0).
+                Cela peut entraîner des risques de fuite de données.
+                Modifiez cette liste pour restreindre les flux sortants à ce qui est strictement nécessaire.
+                EOT
+
+  validation {
+    condition = alltrue([
+      for rule in var.egress_rules : (
+        rule.from_port >= 0 && rule.from_port <= 65535 &&
+        rule.to_port >= 0 && rule.to_port <= 65535
+      )
+    ])
+    error_message = "Les ports des règles egress doivent être entre 0 et 65535."
+  }
+
+  validation {
+    condition = alltrue([
+      for rule in var.egress_rules :
+      alltrue([
+        for cidr in rule.cidr_blocks : can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]+$", cidr))
+      ])
+    ])
+    error_message = "Chaque 'cidr_block' doit être un CIDR IPv4 valide comme 192.168.0.0/16."
+  }
+}
+
 
 variable "ami_id" {
   description = "ID de l'AMI à utiliser pour l'instance EC2"

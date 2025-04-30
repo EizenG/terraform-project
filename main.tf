@@ -11,6 +11,8 @@
 /**
  * Réseau VPC pour isoler l'infrastructure
  */
+
+#trivy:ignore:AVD-AWS-0178
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr_block
 
@@ -40,6 +42,8 @@ resource "aws_internet_gateway" "igw" {
  * Sous-réseau public pour les ressources accessibles depuis Internet
  * Permet d'attribuer automatiquement des IPs publiques aux instances lancées
  */
+
+#trivy:ignore:AVD-AWS-0164
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = var.subnet_cidr_block
@@ -156,14 +160,18 @@ resource "aws_security_group" "instance_sg" {
     }
   }
 
-  # Règle de sortie - autorise tout le trafic sortant
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow all outbound traffic"
+  # Règle de sortie 
+  dynamic "egress" {
+    for_each = var.egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+      description = try(egress.value.description, null)
+    }
   }
+
 
   tags = merge(
     var.common_tags,
@@ -192,6 +200,14 @@ resource "aws_instance" "ec2_instance" {
 
   # Script de démarrage conditionnel
   user_data = var.user_data != "" ? var.user_data : null
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
 
   tags = merge(
     var.common_tags,

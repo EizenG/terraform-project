@@ -71,11 +71,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_allowed_ssh_cidrs"></a> [allowed\_ssh\_cidrs](#input\_allowed\_ssh\_cidrs) | Liste des blocs CIDR autorisés à se connecter en SSH.<br/>                ⚠️ ATTENTION : Utiliser "0.0.0.0/0" autorise l'accès SSH depuis Internet entier, ce qui est fortement déconseillé en production.<br/>                Utilisez uniquement des plages IP de confiance (ex : votre IP publique ou celle de votre VPN). | `list(string)` | n/a | yes |
 | <a name="input_ami_id"></a> [ami\_id](#input\_ami\_id) | ID de l'AMI à utiliser pour l'instance EC2 | `string` | n/a | yes |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | Zone de disponibilité pour le déploiement des ressources | `string` | n/a | yes |
+| <a name="input_egress_rules"></a> [egress\_rules](#input\_egress\_rules) | Liste des règles de sortie (egress). <br/>                ⚠️ Par défaut, tout le trafic sortant est autorisé (0.0.0.0/0).<br/>                Cela peut entraîner des risques de fuite de données.<br/>                Modifiez cette liste pour restreindre les flux sortants à ce qui est strictement nécessaire. | <pre>list(object({<br/>    from_port   = number<br/>    to_port     = number<br/>    protocol    = string<br/>    cidr_blocks = list(string)<br/>    description = optional(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Préfixe utilisé pour nommer toutes les ressources | `string` | n/a | yes |
 | <a name="input_additional_ingress_rules"></a> [additional\_ingress\_rules](#input\_additional\_ingress\_rules) | Règles d'entrée supplémentaires pour le groupe de sécurité | <pre>list(object({<br/>    from_port   = number<br/>    to_port     = number<br/>    protocol    = string<br/>    cidr_blocks = list(string)<br/>    description = string<br/>  }))</pre> | `[]` | no |
-| <a name="input_allowed_ssh_cidrs"></a> [allowed\_ssh\_cidrs](#input\_allowed\_ssh\_cidrs) | Liste des blocs CIDR autorisés à se connecter en SSH | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Tags communs à appliquer à toutes les ressources | `map(string)` | `{}` | no |
 | <a name="input_instance_tags"></a> [instance\_tags](#input\_instance\_tags) | Tags spécifiques à appliquer à l'instance EC2 | `map(string)` | `{}` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Type d'instance EC2 à déployer | `string` | `"t2.micro"` | no |
