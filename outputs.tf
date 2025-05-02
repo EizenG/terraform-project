@@ -43,7 +43,7 @@ output "ssh_key_name" {
 }
 
 output "ssh_private_key" {
-  description = "Clé privée SSH générée (sensible)"
+  description = "Clé privée SSH générée (Attention sensible)"
   value       = tls_private_key.ssh_key.private_key_pem
   sensitive   = true
 }
